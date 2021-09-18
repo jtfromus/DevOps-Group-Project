@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: gis262-cs4783-spring2021-api-lb
+spec:
+  selector:
+    app: cs4783-spring2021-api
+  ports:
+    - protocol: TCP
+      port: 12086
+      targetPort: 12086
+  type: LoadBalancer

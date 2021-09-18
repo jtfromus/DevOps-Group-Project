@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gis262-cs4783-spring2021-api-deployment
+  labels:
+    app: cs4783-spring2021-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cs4783-spring2021-api
+  template:
+    metadata:
+      labels:
+        app: cs4783-spring2021-api
+    spec:
+      containers:
+        - name: gis262-cs4783-spring2021-api-c
+          image: jtfromus/cs4783-spring2021-api
+          ports:
+            - containerPort: 12086
+      imagePullSecrets:
+        - name: gis262-dockerhub

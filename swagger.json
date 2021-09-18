@@ -1,0 +1,284 @@
+{
+	"swagger":"2.0",
+	"info": {
+		"description":"CS 4783 Project",
+		"title":"CS 4783 Project",
+		"version":"1.0.0" 
+	},
+	"host":"10.100.126.32:12086",
+	"configUrl":"10.100.126.32:12086/swagger.json",
+	"basePath":"",
+	"produces": [
+		"application/json" 
+	],
+	"schemes": [
+		"https"
+	],
+	"securityDefinitions": {
+		"api_key": {
+			"type": "apiKey",
+			"in": "header",
+			"name": "api_key"
+		}
+	},
+	"tags": [
+		{ 
+			"name":"hello",
+			"description":"Says hello to the caller" 
+		},
+		{
+			"name":"properties",
+			"description":"list of all properties"
+		}
+	],
+	"paths": { 
+		"/hello": { 
+			"get": {
+				"tags":[
+					"hello"
+				],
+				"parameters":[], 
+				"description":"The proverbial hello world minus the world.", 
+				"responses":{
+					"200": {
+						"description":"hello yourself" 
+					}
+				}
+			}
+		},
+		"/properties":{
+			"get": {
+				"tags":[
+					"properties"
+				],
+				"description":"Returns a list of stored US properties (id, address, and zip) ordered by id.",
+				"parameters":[],
+				"responses":{
+					"200": {
+						"description":"List of properties sent to caller",
+						"schema":{
+							"type":"array",
+							"items":{
+								"$ref":"#/definitions/Properties"
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags":[
+					"properties"
+				],
+				"description":"Add a property. Address must be between 1 and 255 chars. City must be between 1 and 50 chars. State must be exactly 2 chars. Zip must be between 5 and 10 chars. All fields are required. The system will auto-assign a unique id to the new property.",
+				"parameters":[
+					{
+						"in":"body",
+						"name":"body",
+						"description":"Property object that needs to be added",
+						"required":true,
+						"schema":{
+							"$ref":"#/definitions/PropertyData"
+						}
+					}
+				],
+				"security":[
+					{
+						"api_key":[]
+					}
+				],
+				"responses":{
+					"200":{
+						"description":"Successfully added a new property",
+						"schema":{
+							"$ref":"#/definitions/PropertyData"
+						}
+					},
+					"400":{
+						"description":"Invalid property supplied",
+						"headers":{
+							"Address out of range":{
+								"type":"string",
+								"description":"Address is not between 1 and 255 characters."
+							},
+							"Invalid city name":{
+								"type":"string",
+								"description":"City is not between 1 and 50 characters."
+							},
+							"Invalid state name":{
+								"type":"string",
+								"description":"State is not exactly 2 characters."
+							},
+							"Invalid zip":{
+								"type":"string",
+								"description":"Zip is not between 5 and 10 characters."
+							}
+						}
+					}
+				}
+			}
+		},
+		"/properties/{id}":{
+			"get":{
+				"tags":[
+					"properties"
+				],
+				"description":"Return detailed info for the property of an id value",
+				"parameters":[
+					{
+						"name":"id",
+						"in":"path",
+						"description":"The id of the property that needs to be fatched.",
+						"type":"integer"
+					}
+				],
+				"responses":{
+					"200":{
+						"description":"Property info send to caller",
+						"schema":{
+							"$ref":"#/definitions/Properties"
+						}
+					},
+					"400":{
+						"description":"Bad Request"
+					},
+					"404":{
+						"description":"Not found"
+					}
+				}
+			},
+			"delete":{
+				"tags":[
+					"properties"
+				],
+				"description":"Delete property",
+				"parameters":[
+					{
+						"name":"id",
+						"in":"path",
+						"description":"The id of the property that needs to be deleted.",
+						"type":"integer"
+					}
+				],
+				"security":[
+					{
+						"api_key":[]
+					}
+				],
+				"responses":{
+					"200":{
+						"description":"Property deleted",
+						"message":"deleted"
+					},
+					"400":{
+						"description":"Bad Request"
+					},
+					"404":{
+						"description":"Not found"
+					}
+				}
+			},
+			"put":{
+				"tags":["properties"],
+				"description":"Update a property entry",
+				"parameters":[
+					{
+						"name":"id",
+						"in":"path",
+						"description":"The id of the property that needs to be updated.",
+						"type":"integer"
+					},
+					{
+						"in":"body",
+						"name":"body",
+						"description":"Updated property object",
+						"required":true,
+						"schema":{
+							"$ref":"#/definitions/PropertyData"
+						}
+					}
+				],
+				"security":[
+					{
+						"api_key":[]
+					}
+				],
+				"responses":{
+					"200":{
+						"description":"Property updated",
+						"message":"updated"
+					},
+					"400":{
+						"description":"Bad Request",
+						"headers":{
+							"Address out of range":{
+								"type":"string",
+								"description":"Address is not between 1 and 255 characters."
+							},
+							"Invalid city name":{
+								"type":"string",
+								"description":"City is not between 1 and 50 characters."
+							},
+							"Invalid state name":{
+								"type":"string",
+								"description":"State is not exactly 2 characters."
+							},
+							"Invalid zip":{
+								"type":"string",
+								"description":"Zip is not between 5 and 10 characters."
+							}
+						}
+					},
+					"404":{
+						"description":"Not found"
+					}
+				}
+			}	
+		}
+	},
+	"definitions":{
+		"Properties": {
+			"type":"object",
+			"properties":{
+				"id":{
+					"type":"integer",
+					"format":"int64"
+				},
+				"address":{
+					"type":"string"
+				},
+				"city":{
+					"type":"string"
+				},
+				"state":{
+					"type":"string"
+				},
+				"zip":{
+					"type":"string"
+				}
+			},
+			"xml":{
+				"name":"Properties"
+			}
+		},
+		"PropertyData": {
+			"type":"object",
+			"properties":{
+				"address":{
+					"type":"string"
+				},
+				"city":{
+					"type":"string"
+				},
+				"state":{
+					"type":"string"
+				},
+				"zip":{
+					"type":"string"
+				}
+			},
+			"xml":{
+				"name":"PropertyData"
+			}			
+		}
+	}
+}

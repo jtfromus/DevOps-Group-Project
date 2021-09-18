@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gis262-cs4783-spring2021-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20M
+  storageClassName: "manual"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gis262-cs4783-spring2021-db-deployment
+  labels:
+    app: cs4783-spring2021-db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cs4783-spring2021-db
+  template:
+    metadata:
+      labels:
+        app: cs4783-spring2021-db
+    spec:
+      containers:
+        - name: gis262-cs4783-spring2021-db-c
+          image: jtfromus/cs4783-spring2021-db
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - mountPath: /var/lib/mysql
+              name: gis262-db-vol
+      volumes:
+        - name: gis262-db-vol
+          persistentVolumeClaim:
+            claimName: gis262-cs4783-spring2021-pvc

@@ -1,0 +1,13 @@
+FROM node:14
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm install
+RUN npm install dotenv
+RUN npm install winston
+RUN npm install winston-daily-rotate-file
+RUN npm install mysql
+RUN npm install cors
+RUN npm install mocha chai --save-dev
+COPY . .
+EXPOSE 12086
+CMD ["node", "server.js"]

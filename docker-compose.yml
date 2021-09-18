@@ -1,0 +1,20 @@
+version: "3.9"
+volumes:
+  gis262-db-vol: {}
+services:
+  gis262-db:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - gis262-db-vol:/var/lib/mysql
+  gis262-api:
+    build:
+      context: .
+      dockerfile: dockerfiles/Dockerfile_api
+    ports:
+      - "12086:12086"
+    depends_on:
+      - "gis262-db"
